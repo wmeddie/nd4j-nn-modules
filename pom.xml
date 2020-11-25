@@ -31,7 +31,13 @@
     <dependency>
       <groupId>org.nd4j</groupId>
       <artifactId>nd4j-api</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0-beta7</version>
+    </dependency>
+
+    <dependency>
+      <groupId>org.nd4j</groupId>
+      <artifactId>nd4j-common</artifactId>
+      <version>1.0.0-beta7</version>
     </dependency>
 
     <dependency>
@@ -49,15 +55,15 @@
 
     <dependency>
       <groupId>org.nd4j</groupId>
-      <artifactId>nd4j-cuda-10.0</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <artifactId>nd4j-native</artifactId>
+      <version>1.0.0-beta7</version>
       <scope>test</scope>
     </dependency>
 
     <dependency>
       <groupId>org.deeplearning4j</groupId>
       <artifactId>deeplearning4j-datasets</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
+      <version>1.0.0-beta7</version>
       <scope>test</scope>
     </dependency>
 

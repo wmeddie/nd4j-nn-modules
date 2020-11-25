@@ -3,8 +3,8 @@ package org.nd4j.autodiff.nn;
 import lombok.ToString;
 import org.nd4j.autodiff.eager.Tensor;
 import org.nd4j.autodiff.samediff.SDVariable;
+import org.nd4j.common.primitives.Pair;
 import org.nd4j.linalg.api.ops.impl.layers.convolution.config.Pooling2DConfig;
-import org.nd4j.linalg.primitives.Pair;
 
 @ToString
 public class MaxPool2D extends Module {

@@ -4,11 +4,11 @@ import org.nd4j.autodiff.eager.Tensor;
 import org.nd4j.autodiff.samediff.SDVariable;
 import org.nd4j.autodiff.samediff.SameDiff;
 import org.nd4j.autodiff.samediff.ops.*;
+import org.nd4j.common.function.Consumer;
+import org.nd4j.common.primitives.Pair;
 import org.nd4j.linalg.api.buffer.DataType;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.function.Consumer;
-import org.nd4j.linalg.primitives.Pair;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -146,6 +146,10 @@ public abstract class Module {
         if (dynamic || getTape() == null || output == null) {
             setTape(SameDiff.create());
 
+            placeHolders = new HashMap<String, INDArray>() {{
+                put("input0", input);
+            }};
+
             applyToModules(this::setupParameters);
             Tensor placeHolder = t(tape.placeHolder("input0", input.dataType(), input.shape()));
             output = forward(placeHolder);
@@ -160,10 +164,6 @@ public abstract class Module {
      * @return The result of the model operation.
      */
     public INDArray call(final INDArray input) {
-        placeHolders = new HashMap<String, INDArray>() {{
-            put("input0", input);
-        }};
-
         output = apply(input);
         return output.eval(placeHolders);
     }
@@ -172,6 +172,11 @@ public abstract class Module {
     public Tensor apply(final INDArray firstInput, final INDArray secondInput) {
         if (dynamic || getTape() == null || output == null) {
             setTape(SameDiff.create());
+
+            placeHolders = new HashMap<String, INDArray>() {{
+                put("input0", firstInput);
+                put("input1", secondInput);
+            }};
 
             applyToModules(this::setupParameters);
 
@@ -190,11 +195,6 @@ public abstract class Module {
      * @return The result of the model operation.
      */
     public INDArray call(final INDArray firstInput, final INDArray secondInput) {
-        placeHolders = new HashMap<String, INDArray>() {{
-            put("input0", firstInput);
-            put("input1", secondInput);
-        }};
-
         output = apply(firstInput, secondInput);
         return output.eval(placeHolders);
     }
@@ -203,10 +203,17 @@ public abstract class Module {
         if (dynamic || getTape() == null || outputs == null) {
             setTape(SameDiff.create());
 
+            placeHolders = new HashMap<>();
+            int i = 0;
+            for (INDArray input : inputs) {
+                placeHolders.put("input" + i, input);
+                i++;
+            }
+
             applyToModules(this::setupParameters);
 
             Tensor[] placeHolderVariables = new Tensor[inputs.length];
-            int i = 0;
+            i = 0;
             for (INDArray input : inputs) {
                 placeHolderVariables[i] = t(tape.placeHolder("input" + i, input.dataType(), input.shape()));
                 i++;
@@ -226,18 +233,12 @@ public abstract class Module {
     public INDArray[] call(final INDArray[] inputs) {
         placeHolders = new HashMap<>();
 
-        int i = 0;
-        for (INDArray input : inputs) {
-            placeHolders.put("input" + i, input);
-            i++;
-        }
-
         outputs = apply(inputs);
 
 
         Map<String, INDArray> outputMap = getTape().outputAll(placeHolders);
         INDArray[] results = new INDArray[outputs.length];
-        i = 0;
+        int i = 0;
         for (SDVariable output : outputs) {
             results[i] = outputMap.get(output.name());
             i++;
@@ -371,6 +372,7 @@ public abstract class Module {
 
     private void setupParameters(Module module) {
         module.setTape(tape);
+        module.getPlaceHolders().putAll(this.getPlaceHolders());
         for (Map.Entry<String, Field> entry : module.parameters.entrySet()) {
             String name = entry.getKey();
             Field field = entry.getValue();

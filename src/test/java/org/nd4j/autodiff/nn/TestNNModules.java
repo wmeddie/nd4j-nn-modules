@@ -12,12 +12,10 @@ import org.nd4j.autodiff.optim.AdamOptimizer;
 import org.nd4j.autodiff.optim.Optimizer;
 import org.nd4j.autodiff.optim.Sgd;
 import org.nd4j.autodiff.samediff.TrainingConfig;
+import org.nd4j.common.primitives.Pair;
 import org.nd4j.evaluation.classification.Evaluation;
-import org.nd4j.linalg.api.memory.MemoryWorkspace;
 import org.nd4j.linalg.api.ndarray.INDArray;
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.learning.GradientUpdater;
-import org.nd4j.linalg.primitives.Pair;
 import org.nd4j.shade.guava.base.Stopwatch;
 
 import java.io.IOException;
@@ -171,8 +169,8 @@ public class TestNNModules {
 
     @Test
     public void testMnist() throws IOException {
-        val trainData = new NoisyMnistDataSetIterator(0.5, 64, true, 42);
-        val testData = new NoisyMnistDataSetIterator(0.5, 64, false, 42);
+        val trainData = new NoisyMnistDataSetIterator(0.5, 128, true, 42);
+        val testData = new NoisyMnistDataSetIterator(0.5, 128, false, 42);
 
         val model = new MnistModel(trainData.getLabels().size());
         val criterion = new CrossEntropyLoss(model);
@@ -216,8 +214,8 @@ public class TestNNModules {
 
     @Test
     public void testGraphPerformance() throws IOException {
-        val trainData = new MnistDataSetIterator(128, true, 42);
-        val testData = new MnistDataSetIterator(128, false, 42);
+        val trainData = new MnistDataSetIterator(600, true, 42);
+        val testData = new MnistDataSetIterator(600, false, 42);
 
         val model = new MnistModel(10);
         val criterion = new CrossEntropyLoss(model);
@@ -227,7 +225,7 @@ public class TestNNModules {
         trainData.reset();
 
         val sd = criterion.getTape();
-        val optimizer = new org.nd4j.linalg.learning.config.Sgd(0.001);
+        val optimizer = new org.nd4j.linalg.learning.config.Adam();
 
         sd.setTrainingConfig(new TrainingConfig.Builder()
                 .l2(1e-4)
@@ -239,7 +237,7 @@ public class TestNNModules {
         sd.setListeners(new ScoreListener(100));
 
         val started = Stopwatch.createStarted();
-        sd.fit(trainData, 3);
+        sd.fit(trainData, 10);
         val elapsed = started.elapsed(TimeUnit.SECONDS);
         System.out.println("Training time: " + elapsed + "s");
 

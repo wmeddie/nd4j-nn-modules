@@ -2,12 +2,11 @@ package org.nd4j.autodiff.nn;
 
 import lombok.ToString;
 import org.nd4j.autodiff.eager.Tensor;
-import org.nd4j.autodiff.samediff.SDVariable;
+import org.nd4j.common.primitives.Pair;
 import org.nd4j.linalg.api.memory.MemoryWorkspace;
 import org.nd4j.linalg.api.ops.impl.layers.convolution.config.Conv2DConfig;
 import org.nd4j.linalg.api.ops.impl.layers.convolution.config.PaddingMode;
 import org.nd4j.linalg.factory.Nd4j;
-import org.nd4j.linalg.primitives.Pair;
 import org.nd4j.weightinit.impl.ReluUniformInitScheme;
 import org.nd4j.weightinit.impl.UniformInitScheme;
 
@@ -81,7 +80,7 @@ public class Conv2D extends Module {
     @Override
     protected Tensor forward(Tensor input) {
         if (bias != null) {
-            return t(cnn.conv2d(new SDVariable[]{ input, weight, bias }, config));
+            return t(cnn.conv2d(input, weight, bias, config));
         } else {
             return t(cnn.conv2d(input, weight, config));
         }

@@ -445,16 +445,6 @@ public class Tensor extends SDVariable {
     }
 
     @Override
-    public SDVariable truncatedDiv(SDVariable sameDiffVariable) {
-        return data.truncatedDiv(sameDiffVariable);
-    }
-
-    @Override
-    public SDVariable truncatedDiv(String varName, SDVariable sameDiffVariable) {
-        return data.truncatedDiv(varName, sameDiffVariable);
-    }
-
-    @Override
     public SDVariable squaredDifference(SDVariable x) {
         return data.squaredDifference(x);
     }

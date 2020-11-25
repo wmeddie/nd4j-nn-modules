@@ -773,6 +773,11 @@ public class TensorArray implements INDArray {
     }
 
     @Override
+    public INDArray mmul(INDArray other, char resultOrder) {
+        return null;
+    }
+
+    @Override
     public double[][] toDoubleMatrix() {
         return new double[0][];
     }

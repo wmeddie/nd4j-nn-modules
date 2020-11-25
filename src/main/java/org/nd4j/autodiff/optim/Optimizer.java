@@ -1,7 +1,7 @@
 package org.nd4j.autodiff.optim;
 
 import org.nd4j.autodiff.nn.Parameter;
-import org.nd4j.linalg.function.Supplier;
+import org.nd4j.common.function.Supplier;
 
 import java.util.Collection;
 

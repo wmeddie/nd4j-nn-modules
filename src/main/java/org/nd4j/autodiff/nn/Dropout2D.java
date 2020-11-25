@@ -2,6 +2,7 @@ package org.nd4j.autodiff.nn;
 
 import org.nd4j.autodiff.eager.Tensor;
 import org.nd4j.autodiff.samediff.SDVariable;
+import org.nd4j.linalg.api.buffer.DataType;
 
 public class Dropout2D extends Module {
     private final double keepProbability;
@@ -18,7 +19,7 @@ public class Dropout2D extends Module {
     @Override
     protected Tensor forward(Tensor in) {
         if (getTrain()) {
-            SDVariable bernoulli = random.bernoulli(keepProbability, in.shape());
+            SDVariable bernoulli = random.bernoulli(keepProbability, DataType.FLOAT, in.getShape());
 
             return t(in.mul(bernoulli));
         } else {

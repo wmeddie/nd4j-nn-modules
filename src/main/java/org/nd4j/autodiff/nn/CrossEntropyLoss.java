@@ -2,6 +2,10 @@ package org.nd4j.autodiff.nn;
 
 import org.nd4j.autodiff.eager.Tensor;
 import org.nd4j.autodiff.samediff.SDVariable;
+import org.nd4j.linalg.api.ndarray.INDArray;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class CrossEntropyLoss extends WeightedLoss {
 
@@ -21,7 +25,7 @@ public class CrossEntropyLoss extends WeightedLoss {
         SDVariable output = model.forward(modelInput);
 
         if (weight == null) {
-            SDVariable losses = loss.softmaxCrossEntropy(null, target, output);
+            SDVariable losses = loss.softmaxCrossEntropy(target, output, weight);
             losses.markAsLoss();
             return t(losses);
         } else {
